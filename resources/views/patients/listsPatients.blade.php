@@ -7,6 +7,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
 <!-- Bootstrap -->
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<meta name="csrf-token" content="{{ csrf_token() }}" />
 <table class="table table-striped">
     <thead>
         <tr>
@@ -43,19 +45,59 @@
             <td>
                 <input class="btn btn-primary btn-md" type="button" onclick="location.href='/membercloud/public';" value="Return" />
 
+
                 <form action="{{url('/patients/'.$list->id)}}" method="post">
                     @csrf
                     {{method_field('DELETE')}}
-                    <input class="btn btn-warning btn-md" onclick="return confirm('Do you want to delete?')" type="submit" value="Delete">
+                    <input class="btn btn-warning btn-md" onclick="miFunc('{{$list->id}}')" type="submit" value="Delete">
+                    <!-- <input type="text" name="elID" id="elID" value="{{$list->id}}"> -->
                 </form>
+
+
                 <form action="{{url('/patients/'.$list->id.'/edit')}}" method="post">
                     @csrf
                     {{method_field('GET')}}
                     <input class="btn btn-warning btn-md" type="submit" value="Edit">
                 </form>
-            </td>
 
+            </td>
         </tr>
         @endforeach
     </tbody>
 </table>
+<script>
+    function miFunc(valor) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire(
+                    'Deleted!',
+                    'Your file has been deleted.',
+                    'success'
+                )
+                $.ajax({
+                    type: "DELETE",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: "{{url('/patients/')}}" + "/" + valor,
+                    success: function(msg) {
+                        // console.log(msg);
+                        location.href = 'http://localhost/membercloud/public/patients/{patient}';
+                    },
+                    error: function() {
+                        alert('mal:'+valor);
+                    }
+                });
+            }
+        })
+    }
+</script>

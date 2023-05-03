@@ -6,6 +6,10 @@
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
 <!-- Bootstrap -->
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 <div><br></div>
 <div class="container">
     <div class="row">
@@ -94,7 +98,7 @@
                         <div class="row">
 
                             <div class="col-md-6 text-center">
-                                <button type="submit" class="btn btn-primary btn-md">Submit</button>
+                                <button type="submit" onclick="miFunc()" class="btn btn-primary btn-md">Submit</button>
                                 <input class="btn btn-primary btn-md" type="button" onclick="location.href='patients/{patient}';" value="List" />
                                 <!-- <a href="{{url('/patients/{patient}')}}">List</a> -->
 
@@ -108,3 +112,15 @@
         </div>
     </div>
 </div>
+
+<script>
+    function miFunc() {
+        Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your work has been saved',
+            showConfirmButton: false,
+            timer: 1500
+        })
+    }
+</script>

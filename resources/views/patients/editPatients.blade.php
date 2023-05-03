@@ -6,12 +6,16 @@
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
 <!-- Bootstrap -->
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<meta name="csrf-token" content="{{ csrf_token() }}" />
 <div><br></div>
 <div class="container">
     <div class="row">
         <div class="col-md-12">
             <div class="well well-sm">
-                <form class="form-horizontal" method="POST" action="{{url('/patients/'.$patient->id)}}">
+                <form class="form-horizontal" method="POST" action="{{url('/patients/'.$patient->id)}}" name="formulario1" id="formulario1">
                     @csrf
                     {{method_field('PATCH')}}
                     <fieldset>
@@ -95,9 +99,9 @@
                         <div class="row">
 
                             <div class="col-md-6 text-center">
-                                <button type="submit" class="btn btn-primary btn-md">Edit</button>
-                                <input class="btn btn-primary btn-md" type="button" onclick="location.href='../patients/{patient}';" value="List" />
-                                
+                                <button type="submit" onclick="miFunc('{{$patient->id}}')" class="btn btn-primary btn-md">Edit</button>
+                                <input class="btn btn-primary btn-md" type="button" onclick="location.href='../../patients/{patient}';" value="List" />
+
 
                             </div>
 
@@ -109,3 +113,40 @@
         </div>
     </div>
 </div>
+<script>
+    function miFunc(valor) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, edit it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire(
+                    'Edited!',
+                    'Your file has been edited.',
+                    'success'
+                )
+                $.ajax({
+                    type: "PATCH",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: "{{url('/patients/')}}" + "/" + valor,
+                    success: function(msg) {
+                        // alert('bien:'+valor);
+                        document.formulario1.submit();
+                        
+                    },
+                    error: function() {
+                        alert('mal:'+valor);
+                    }
+                });
+            }
+        })
+    }
+</script>
